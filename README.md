@@ -1,8 +1,5 @@
 # 💬 MCP Chatbot – Composio + Local MCP servers
 
-## 👀 Check Out My Blog Post on this Project!
-
-> I have a blog post about this project [here]().
 
 ## Brief
 
@@ -16,8 +13,7 @@ local MCP servers**, with **tool-calling support** like **Cursor** and
 > [!NOTE]
 > This is just a simple demo application designed to show you how you can
 > connect to MCP servers in Next.js (Not a production ready application)
-<!-- 
-Link to the demo: [Composio hosted MCP servers](https://youtu.be/dvGf4mpnmH4), [Local filesystem MCP server](https://youtu.be/GBH_WfYu2_4) -->
+
 
 ## 🚀 Features
 
@@ -83,8 +79,6 @@ composio integrations
 You are not limited to working with remotely hosted MCP servers from Composio.
 You can run this application entirely with locally hosted MCP servers.
 
-> [!NOTE]
-> You can find the steps on how to set local MCP servers on the blog here: [Link]()
 
 ## 🧪 Run the Dev Server
 
