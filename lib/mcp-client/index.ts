@@ -2,6 +2,8 @@ import { OpenAI } from "openai";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import dotenv from "dotenv";
+import os from "os";
+import path from "path";
 
 dotenv.config();
 
@@ -20,25 +22,29 @@ let tools: any[] = [];
 
 let connected = false;
 
-export async function initMCP(serverScriptPath: string, workspace: string) {
+export async function initMCP(serverScriptPath: string) {
   if (connected) return;
 
-  const command = serverScriptPath.endsWith(".py")
-    ? process.platform === "win32"
-      ? "python"
-      : "python3"
+  const command = serverScriptPath.endsWith(".ts")
+    ? "npx"
+    : process.platform === "win32"
+    ? "node"
     : process.execPath;
+  
+  const args = serverScriptPath.endsWith(".ts")
+    ? ["tsx", serverScriptPath, os.homedir()]
+    : [serverScriptPath, os.homedir()];
 
   const transport = new StdioClientTransport({
     command,
-    args: [serverScriptPath, workspace],
+    args,
   });
 
   mcp.connect(transport);
 
   const toolsResult = await mcp.listTools();
 
-  tools = toolsResult.tools.map((tool) => ({
+  tools = toolsResult.tools.map((tool: any) => ({
     type: "function",
     function: {
       name: tool.name,
@@ -50,7 +56,7 @@ export async function initMCP(serverScriptPath: string, workspace: string) {
   connected = true;
   console.log(
     "MCP Connected with tools:",
-    tools.map((t) => t.function.name),
+    tools.map((t: any) => t.function.name),
   );
 }
 
@@ -59,10 +65,7 @@ export async function executeToolCall(toolCall: any) {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || "{}");
 
-  const result = await mcp.callTool({
-    name: toolName,
-    arguments: toolArgs,
-  });
+  const result = await mcp.callTool(toolName, toolArgs);
 
   return {
     id: toolCall.id,
